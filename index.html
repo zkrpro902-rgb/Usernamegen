@@ -32,10 +32,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .inp::placeholder{color:var(--muted);}
 .save-btn{padding:9px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;color:var(--acc);font-family:var(--font2);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .save-btn:hover,.save-btn.saved{background:var(--acc);color:#0a0a0f;border-color:var(--acc);}
-.proxy-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;margin-bottom:14px;font-size:0.65rem;color:var(--muted2);}
-.proxy-count{color:var(--acc);font-weight:700;}
-.fetch-proxy-btn{margin-left:auto;padding:4px 10px;background:transparent;border:1px solid var(--border2);border-radius:4px;color:var(--muted2);font-family:var(--font2);font-size:0.7rem;cursor:pointer;transition:all 0.18s;}
-.fetch-proxy-btn:hover{border-color:var(--acc);color:var(--acc);}
+
 .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px;}
 .type-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-bottom:14px;}
 .type-btn{padding:9px 6px;background:var(--panel2);border:1px solid var(--border2);border-radius:6px;color:var(--muted2);font-family:var(--font2);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.18s;text-align:center;}
@@ -112,12 +109,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <button class="save-btn" id="tkBtn" onclick="saveTkConfirm()">Save</button>
     </div>
 
-    <div class="proxy-bar">
-      <span>Proxies :</span>
-      <span class="proxy-count" id="proxyCount">0</span>
-      <span style="color:var(--muted)">actifs</span>
-      <button class="fetch-proxy-btn" id="fetchProxyBtn" onclick="fetchProxies()">⟳ Fetch</button>
-    </div>
+
 
     <!-- Discord types -->
     <div id="typesDiscord">
@@ -207,21 +199,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const tk=localStorage.getItem('tk');if(tk)document.getElementById('tokenInp').value=tk;
 });
 
-let proxies=[],proxyIndex=0;
-async function fetchProxies(){
-  const btn=document.getElementById('fetchProxyBtn');
-  btn.textContent='...';btn.style.pointerEvents='none';
-  try{
-    const r=await fetch(WORKER+'/?proxies=1',{signal:AbortSignal.timeout(8000)});
-    if(!r.ok)throw new Error();
-    const d=await r.json();
-    proxies=d.proxies||[];proxyIndex=0;
-    document.getElementById('proxyCount').textContent=proxies.length;
-    btn.textContent='✓';
-    setTimeout(()=>{btn.textContent='⟳ Fetch';btn.style.pointerEvents='';},2000);
-  }catch{btn.textContent='⟳ Fetch';btn.style.pointerEvents='';setStatus('Proxies indispo',false);}
-}
-function getProxy(){if(!proxies.length)return null;return proxies[proxyIndex++%proxies.length];}
+
 
 function toggleType(el){el.classList.toggle('active');}
 function getActiveTypes(){return[...document.querySelectorAll('#types'+currentPlatform.charAt(0).toUpperCase()+currentPlatform.slice(1)+' .type-btn.active')].map(b=>b.dataset.type);}
